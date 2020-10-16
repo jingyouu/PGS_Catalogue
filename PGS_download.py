@@ -1,8 +1,15 @@
 import requests
 import json
 import wget
+import os
+import argparse
 
-url = "https://www.pgscatalog.org/rest/score/all?limit=30&offset=20"
+
+parser = argparse.ArgumentParser(description='Download PGS file from PGS Catalogue')
+parser.add_argument('--o', type=str, help='Output dir for files download')
+args = parser.parse_args()
+
+url = "https://www.pgscatalog.org/rest/score/all?limit=1000&offset=0"
 resp = requests.get(url,stream=True)
 
 data = resp.json()
@@ -21,6 +28,6 @@ with open("coverageFile.txt","a") as f:
 
         #download score files
         score_url = tmp_dict['ftp_scoring_file']
-        wget.download(score_url,"PGS/")
+        wget.download(score_url,args.o)
 
- 
+os.system("gunzip " + args.o +"/*")
